@@ -41,5 +41,6 @@ public interface MetricStringDistance extends StringDistance {
      * @param s2
      * @return
      */
-    double distance(String s1, String s2);
+    @Override
+		double distance(String s1, String s2);
 }

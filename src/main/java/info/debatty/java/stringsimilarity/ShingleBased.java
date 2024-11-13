@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
 @Immutable
 public abstract class ShingleBased {
 
-    private static final int DEFAULT_K = 3;
+    protected static final int DEFAULT_K = 3;
 
     private final int k;
 
@@ -102,19 +102,37 @@ public abstract class ShingleBased {
      * @return the profile of this string, as an unmodifiable Map
      */
     public final Map<String, Integer> getProfile(final String string) {
-        HashMap<String, Integer> shingles = new HashMap<String, Integer>();
-
-        String string_no_space = SPACE_REG.matcher(string).replaceAll(" ");
-        for (int i = 0; i < (string_no_space.length() - k + 1); i++) {
-            String shingle = string_no_space.substring(i, i + k);
-            Integer old = shingles.get(shingle);
-            if (old != null) {
-                shingles.put(shingle, old + 1);
-            } else {
-                shingles.put(shingle, 1);
-            }
-        }
-
+        HashMap<String, Integer> shingles = _getProfile(string);
         return Collections.unmodifiableMap(shingles);
     }
+
+		private HashMap<String, Integer> _getProfile(final String string) {
+			HashMap<String, Integer> shingles = new HashMap<String, Integer>();
+
+			String string_no_space = SPACE_REG.matcher(string).replaceAll(" ");
+			for (int i = 0; i < (string_no_space.length() - k + 1); i++) {
+			    String shingle = string_no_space.substring(i, i + k);
+			    Integer old = shingles.get(shingle);
+			    if (old != null) {
+			        shingles.put(shingle, old + 1);
+			    } else {
+			        shingles.put(shingle, 1);
+			    }
+			}
+			return shingles;
+		}
+
+		/**
+		 * For efficiency. Some users only need the keys.
+		 * And since we might cache the keys, make this efficient use of memory
+		 */
+		public String[] getProfileKeys(String string) {
+			HashMap<String, Integer> shingles = _getProfile(string);
+			String[] keys = new String[shingles.size()];
+			int pos = 0;
+			for (String key : shingles.keySet()) {
+				keys[pos++] = key;
+			}
+			return keys;
+		}
 }

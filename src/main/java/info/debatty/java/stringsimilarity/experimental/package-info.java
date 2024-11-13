@@ -1,0 +1,2 @@
+@org.jspecify.annotations.NullMarked
+package info.debatty.java.stringsimilarity.experimental;
