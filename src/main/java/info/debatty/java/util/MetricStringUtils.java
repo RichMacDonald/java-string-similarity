@@ -3,6 +3,8 @@ package info.debatty.java.util;
 import java.util.HashSet;
 import java.util.Set;
 import org.jspecify.annotations.NonNull;
+import info.debatty.java.stringsimilarity.NormalizedLevenshtein;
+import info.debatty.java.stringsimilarity.WeightedLevenshtein;
 import info.debatty.java.stringsimilarity.interfaces.StringDistance;
 
 public class MetricStringUtils {
@@ -57,5 +59,10 @@ public class MetricStringUtils {
 				}
 			}
 		}
+	}
+
+	public static StringDistance qwertyLevenshtein() {
+		WeightedLevenshtein weighted = new WeightedLevenshtein(QwertyCharacterSubstitutionWeighting.INSTANCE);
+		return new NormalizedStringDistance1(weighted);
 	}
 }

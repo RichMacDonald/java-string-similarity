@@ -11,3 +11,5 @@ I see some places where I can improve the efficiency for batch operations.
 * Jaccard: Allow cached profiles
 
 * Vector and matrix processing
+
+* QWERTY weighting
