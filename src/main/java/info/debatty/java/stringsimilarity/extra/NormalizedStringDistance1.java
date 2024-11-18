@@ -1,4 +1,4 @@
-package info.debatty.java.util;
+package info.debatty.java.stringsimilarity.extra;
 
 import info.debatty.java.stringsimilarity.interfaces.NormalizedStringDistance;
 import info.debatty.java.stringsimilarity.interfaces.NormalizedStringSimilarity;
@@ -8,7 +8,7 @@ import info.debatty.java.stringsimilarity.interfaces.StringDistance;
  * Taken from NormalizedLevenshtein, but for any StringDistancwe
  */
 
-public final class NormalizedStringDistance1  implements NormalizedStringDistance, NormalizedStringSimilarity{
+public class NormalizedStringDistance1  implements NormalizedStringDistance, NormalizedStringSimilarity{
 
 	private final StringDistance delegate;
 

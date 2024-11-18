@@ -10,7 +10,7 @@ import info.debatty.java.stringsimilarity.interfaces.StringDistance;
  */
 interface MetricStringVectorConsumer{
 
-	void accept(StringDistance metric, String[] row, String item, int rowPosition, double distance);
+	void accept(StringDistance metric, String[] row, String rowItem, int rowPosition, double distance);
 
 	boolean isCompleted();
 

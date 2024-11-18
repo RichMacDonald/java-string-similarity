@@ -24,11 +24,12 @@
 package info.debatty.java.stringsimilarity;
 
 import info.debatty.java.stringsimilarity.interfaces.NormalizedStringSimilarity;
+import info.debatty.java.util.MetricStringCache;
 import info.debatty.java.stringsimilarity.interfaces.NormalizedStringDistance;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
+import org.jspecify.annotations.Nullable;
 import net.jcip.annotations.Immutable;
 
 /**
@@ -38,7 +39,7 @@ import net.jcip.annotations.Immutable;
  * @author Thibault Debatty
  */
 @Immutable
-public class SorensenDice extends ShingleBased implements
+public class SorensenDice extends ShingleMapBasedA implements
         NormalizedStringDistance, NormalizedStringSimilarity {
 
     /**
@@ -69,6 +70,10 @@ public class SorensenDice extends ShingleBased implements
         super();
     }
 
+	  	public SorensenDice(final int k, @Nullable MetricStringCache<Map<String, Integer>> cache) {
+	  		super(k, cache);
+	  	}
+
     /**
      * Similarity is computed as 2 * |A inter B| / (|A| + |B|).
      *
@@ -93,20 +98,20 @@ public class SorensenDice extends ShingleBased implements
         Map<String, Integer> profile1 = getProfile(s1);
         Map<String, Integer> profile2 = getProfile(s2);
 
-        Set<String> union = new HashSet<String>();
-        union.addAll(profile1.keySet());
-        union.addAll(profile2.keySet());
+      Set<String> union = new HashSet<String>();
+      union.addAll(profile1.keySet());
+      union.addAll(profile2.keySet());
 
-        int inter = 0;
+      int inter = 0;
 
-        for (String key : union) {
-            if (profile1.containsKey(key) && profile2.containsKey(key)) {
-                inter++;
-            }
-        }
+      for (String key : union) {
+          if (profile1.containsKey(key) && profile2.containsKey(key)) {
+              inter++;
+          }
+      }
 
-        return 2.0 * inter / (profile1.size() + profile2.size());
-    }
+      return 2.0 * inter / (profile1.size() + profile2.size());
+  }
 
     /**
      * Returns 1 - similarity.

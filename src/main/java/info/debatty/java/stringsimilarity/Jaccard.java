@@ -40,101 +40,84 @@ import net.jcip.annotations.Immutable;
  * the cardinality of each n-gram is not taken into account.
  * Distance is computed as 1 - cosine similarity.
  * Jaccard index is a metric distance.
+ *
  * @author Thibault Debatty
  */
 @Immutable
-public class Jaccard extends ShingleBased implements
-        MetricStringDistance, NormalizedStringDistance,
-        NormalizedStringSimilarity {
+public class Jaccard extends ShingleKeyBasedA implements
+    MetricStringDistance,NormalizedStringDistance,
+    NormalizedStringSimilarity {
 
-	//Added for performance when doing large comparisons
-	//This cache is optional. The client is also capable of holding onto the profiles
-	private final @Nullable MetricStringCache<String[]> cache;
+	/**
+	 * The strings are first transformed into sets of k-shingles (sequences of k
+	 * characters), then Jaccard index is computed as |A inter B| / |A union B|.
+	 * The default value of k is 3.
+	 *
+	 * @param k
+	 */
+	public Jaccard(final int k) {
+		super(k, null);
+	}
 
-    /**
-     * The strings are first transformed into sets of k-shingles (sequences of k
-     * characters), then Jaccard index is computed as |A inter B| / |A union B|.
-     * The default value of k is 3.
-     *
-     * @param k
-     */
-    public Jaccard(final int k) {
-        this(k, null);
-    }
+	public Jaccard(final int k, @Nullable MetricStringCache<String[]> cache) {
+		super(k, cache);
+	}
 
-    public Jaccard(final int k, @Nullable MetricStringCache<String[]> cache) {
-      super(k);
-      this.cache = cache;
-  }
+	/**
+	 * The strings are first transformed into sets of k-shingles (sequences of k
+	 * characters), then Jaccard index is computed as |A inter B| / |A union B|.
+	 * The default value of k is 3.
+	 */
+	public Jaccard() {
+		this(DEFAULT_K);
+	}
 
-    /**
-     * The strings are first transformed into sets of k-shingles (sequences of k
-     * characters), then Jaccard index is computed as |A inter B| / |A union B|.
-     * The default value of k is 3.
-     */
-    public Jaccard() {
-        this(DEFAULT_K);
-    }
-
-    /**
-     * Compute Jaccard index: |A inter B| / |A union B|.
-     * @param s1 The first string to compare.
-     * @param s2 The second string to compare.
-     * @return The Jaccard index in the range [0, 1]
-     * @throws NullPointerException if s1 or s2 is null.
-     */
-    @Override
-		public final double similarity(final String s1, final String s2) {
-//        if (s1 == null) {
-//            throw new NullPointerException("s1 must not be null");
-//        }
-//
-//        if (s2 == null) {
-//            throw new NullPointerException("s2 must not be null");
-//        }
-
-			if (s1.equals(s2)) {
-		    return 1;
-			}
-
-       return _similarity(s1, s2, getProfileKeys(s1), getProfileKeys(s2), false);
-    }
-
-		@Override
-		public String[] getProfileKeys(String string) {
-			if (cache == null) {
-				return _getProfileKeys(string);
-			}
-			return cache.computeIfAbsent(string, this::_getProfileKeys);
+	/**
+	 * Compute Jaccard index: |A inter B| / |A union B|.
+	 *
+	 * @param s1
+	 *          The first string to compare.
+	 * @param s2
+	 *          The second string to compare.
+	 * @return The Jaccard index in the range [0, 1]
+	 * @throws NullPointerException
+	 *           if s1 or s2 is null.
+	 */
+	@Override
+	public final double similarity(final String s1, final String s2) {
+		if (s1 == null) {
+			throw new NullPointerException("s1 must not be null");
 		}
 
-		private String[] _getProfileKeys(String string) {
-			return super.getProfileKeys(string);
+		if (s2 == null) {
+			throw new NullPointerException("s2 must not be null");
 		}
 
-		public double similarity(final String s1, final String s2, String[] profile1, String[] profile2) {
-			return _similarity(s1, s2, profile1, profile2, true);
+		if (s1.equals(s2)) {
+			return 1;
 		}
 
-		private double _similarity(final String s1, final String s2, String[] profile1, String[] profile2, boolean checkEquality) {
-			if (checkEquality && s1.equals(s2)) {
-			    return 1;
-			}
-			int unionSetCount = MetricStringUtils.unionSetCount(profile1, profile2);
-			int inter = profile1.length + profile2.length - unionSetCount;
-			return 1.0 * inter / unionSetCount;
-		}
+		String[] profile1 = getProfileKeys(s1);
+		String[] profile2 = getProfileKeys(s2);
 
+		int unionSetCount = MetricStringUtils.unionSetCount(profile1, profile2);
+		int inter = profile1.length + profile2.length - unionSetCount;
+		return 1.0 * inter / unionSetCount;
+	}
 
-    /**
-     * Distance is computed as 1 - similarity.
-     * @param s1 The first string to compare.
-     * @param s2 The second string to compare.
-     * @return 1 - the Jaccard similarity.
-     * @throws NullPointerException if s1 or s2 is null.
-     */
-    @Override
-		public final double distance(final String s1, final String s2) {
-        return 1.0 - similarity(s1, s2);
-    }
+	/**
+	 * Distance is computed as 1 - similarity.
+	 *
+	 * @param s1
+	 *          The first string to compare.
+	 * @param s2
+	 *          The second string to compare.
+	 * @return 1 - the Jaccard similarity.
+	 * @throws NullPointerException
+	 *           if s1 or s2 is null.
+	 */
+	@Override
+	public final double distance(final String s1, final String s2) {
+		return 1.0 - similarity(s1, s2);
+	}
 }

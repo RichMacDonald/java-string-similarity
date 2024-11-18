@@ -3,8 +3,7 @@ package info.debatty.java.util;
 import java.util.HashSet;
 import java.util.Set;
 import org.jspecify.annotations.NonNull;
-import info.debatty.java.stringsimilarity.NormalizedLevenshtein;
-import info.debatty.java.stringsimilarity.WeightedLevenshtein;
+import info.debatty.java.stringsimilarity.extra.QwertyLevenshtein;
 import info.debatty.java.stringsimilarity.interfaces.StringDistance;
 
 public class MetricStringUtils {
@@ -25,10 +24,11 @@ public class MetricStringUtils {
 		}
 	}
 
-	public static void processVector(StringDistance metric, String @NonNull [] row, String item, MetricStringVectorConsumer consumer) {
+	public static void processVector(StringDistance metric, String @NonNull [] row, String matchItem, MetricStringVectorConsumer consumer) {
 		for (int i = 0; i < row.length; i++) {
-			double distance = metric.distance(item, row[i]);
-			consumer.accept(metric, row, item, i, distance);
+			String rowItem = row[i];
+			double distance = metric.distance(matchItem, rowItem);
+			consumer.accept(metric, row, rowItem, i, distance);
 			if (consumer.isCompleted()) {
 				return;
 			}
@@ -59,10 +59,5 @@ public class MetricStringUtils {
 				}
 			}
 		}
-	}
-
-	public static StringDistance qwertyLevenshtein() {
-		WeightedLevenshtein weighted = new WeightedLevenshtein(QwertyCharacterSubstitutionWeighting.INSTANCE);
-		return new NormalizedStringDistance1(weighted);
 	}
 }

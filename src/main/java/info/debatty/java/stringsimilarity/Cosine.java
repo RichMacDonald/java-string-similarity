@@ -24,9 +24,10 @@
 package info.debatty.java.stringsimilarity;
 
 import info.debatty.java.stringsimilarity.interfaces.NormalizedStringSimilarity;
+import info.debatty.java.util.MetricStringCache;
 import info.debatty.java.stringsimilarity.interfaces.NormalizedStringDistance;
 import java.util.Map;
-
+import org.jspecify.annotations.Nullable;
 import net.jcip.annotations.Immutable;
 
 /**
@@ -37,7 +38,7 @@ import net.jcip.annotations.Immutable;
  * @author Thibault Debatty
  */
 @Immutable
-public class Cosine extends ShingleBased implements
+public class Cosine extends ShingleMapBasedA implements
         NormalizedStringDistance, NormalizedStringSimilarity {
 
     /**
@@ -61,6 +62,10 @@ public class Cosine extends ShingleBased implements
     public Cosine() {
         super();
     }
+
+	  	public Cosine(final int k, @Nullable MetricStringCache<Map<String, Integer>> cache) {
+	  		super(k, cache);
+	  	}
 
     /**
      * Compute the cosine similarity between strings.

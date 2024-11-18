@@ -1,11 +1,11 @@
 package info.debatty.java.stringsimilarity;
 
 import info.debatty.java.stringsimilarity.interfaces.StringDistance;
-
+import info.debatty.java.util.MetricStringCache;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
+import org.jspecify.annotations.Nullable;
 import net.jcip.annotations.Immutable;
 
 /**
@@ -19,7 +19,7 @@ import net.jcip.annotations.Immutable;
  * @author Thibault Debatty
  */
 @Immutable
-public class QGram extends ShingleBased implements StringDistance {
+public class QGram extends ShingleMapBasedA implements StringDistance {
 
     /**
      * Q-gram similarity and distance. Defined by Ukkonen in "Approximate
@@ -49,6 +49,10 @@ public class QGram extends ShingleBased implements StringDistance {
     public QGram() {
         super();
     }
+
+	  	public QGram(final int k, @Nullable MetricStringCache<Map<String, Integer>> cache) {
+	  		super(k, cache);
+	  	}
 
     /**
      * The distance between two strings is defined as the L1 norm of the

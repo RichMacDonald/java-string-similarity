@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
  * @author Thibault Debatty
  */
 @Immutable
-public abstract class ShingleBased {
+public abstract class ShingleBasedA {
 
     protected static final int DEFAULT_K = 3;
 
@@ -67,7 +67,7 @@ public abstract class ShingleBased {
      * @param k
      * @throws IllegalArgumentException if k is &lt;= 0
      */
-    public ShingleBased(final int k) {
+    public ShingleBasedA(final int k) {
         if (k <= 0) {
             throw new IllegalArgumentException("k should be positive!");
         }
@@ -77,7 +77,7 @@ public abstract class ShingleBased {
     /**
      *
      */
-    ShingleBased() {
+    ShingleBasedA() {
         this(DEFAULT_K);
     }
 
@@ -90,6 +90,7 @@ public abstract class ShingleBased {
         return k;
     }
 
+
     /**
      * Compute and return the profile of s, as defined by Ukkonen "Approximate
      * string-matching with q-grams and maximal matches".
@@ -101,12 +102,7 @@ public abstract class ShingleBased {
      * @param string
      * @return the profile of this string, as an unmodifiable Map
      */
-    public final Map<String, Integer> getProfile(final String string) {
-        HashMap<String, Integer> shingles = _getProfile(string);
-        return Collections.unmodifiableMap(shingles);
-    }
-
-		private HashMap<String, Integer> _getProfile(final String string) {
+		protected Map<String, Integer> getProfile(final String string) {
 			HashMap<String, Integer> shingles = new HashMap<String, Integer>();
 
 			String string_no_space = SPACE_REG.matcher(string).replaceAll(" ");
@@ -119,20 +115,6 @@ public abstract class ShingleBased {
 			        shingles.put(shingle, 1);
 			    }
 			}
-			return shingles;
-		}
-
-		/**
-		 * For efficiency. Some users only need the keys.
-		 * And since we might cache the keys, make this efficient use of memory
-		 */
-		public String[] getProfileKeys(String string) {
-			HashMap<String, Integer> shingles = _getProfile(string);
-			String[] keys = new String[shingles.size()];
-			int pos = 0;
-			for (String key : shingles.keySet()) {
-				keys[pos++] = key;
-			}
-			return keys;
+      return Collections.unmodifiableMap(shingles);
 		}
 }
