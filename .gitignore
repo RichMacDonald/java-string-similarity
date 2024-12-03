@@ -8,3 +8,5 @@
 /.classpath
 /bin/
 /.checkstyle
+/bin/
+/.factorypath
